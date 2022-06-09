@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="自动瘦身">
+        <CheckBoxPreference
+            android:key="enable_auto_clean"
+            android:title="启用自动瘦身" />
+
+        <Preference
+            android:key="auto_clean_delay"
+            android:title="自动瘦身间隔(小时)" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="瘦身配置">
+        <Preference
+            android:key="manage_prefs"
+            android:title="管理配置文件" />
+        <Preference
+            android:key="keep_file_days"
+            android:title="保留近期文件(天)" />
+        <CheckBoxPreference
+            android:key="dont_show_clean_toast"
+            android:title="不显示瘦身Toast" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="关于">
+        <Preference
+            android:key="module_version"
+            android:title="模块版本" />
+        <Preference
+            android:key="author"
+            android:title="作者"
+            android:summary="KyuubiRan"/>
+        <Preference
+            android:key="last_clean_time"
+            android:title="上次清理" />
+    </PreferenceCategory>
+</PreferenceScreen>

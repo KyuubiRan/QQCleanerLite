@@ -1,4 +1,4 @@
-package com.example.template.hook
+package me.kyuubiran.qqcleanerlite.hook
 
 abstract class BaseHook {
     var isInit: Boolean = false

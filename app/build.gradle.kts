@@ -7,11 +7,11 @@ android {
     compileSdk = 32
 
     defaultConfig {
-        applicationId = "com.example.template"
+        applicationId = "me.kyuubiran.qqcleanerlite"
         minSdk = 24
         targetSdk = 32
         versionCode = 1
-        versionName = "1.0.0"
+        versionName = "1.0"
     }
 
     buildTypes {
@@ -23,7 +23,7 @@ android {
     }
 
     androidResources {
-        additionalParameters("--allow-reserved-package-id", "--package-id", "0x45")
+        additionalParameters("--allow-reserved-package-id", "--package-id", "0x48")
     }
 
     compileOptions {
