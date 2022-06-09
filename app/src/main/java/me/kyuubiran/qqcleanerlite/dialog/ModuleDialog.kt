@@ -77,7 +77,7 @@ class ModuleDialog(activity: Activity) : AlertDialog.Builder(activity) {
             findPreference("auto_clean_delay").apply {
                 isEnabled = ConfigManager.enableAutoClean
                 summary = if (ConfigManager.enableAutoClean) "${ConfigManager.autoCleanDelay} 小时" else "自动瘦身已关闭"
-                onPreferenceChangeListener = this@PrefsFragment
+                onPreferenceClickListener = this@PrefsFragment
                 onAutoCleanChanged.onValueChanged += {
                     runOnMainThread {
                         summary = if (it) "${ConfigManager.autoCleanDelay} 小时" else "自动瘦身已关闭"
