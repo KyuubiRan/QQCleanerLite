@@ -9,6 +9,7 @@ import android.preference.CheckBoxPreference
 import android.preference.Preference
 import android.preference.PreferenceFragment
 import android.text.InputType
+import android.view.ContextThemeWrapper
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.github.kyuubiran.ezxhelper.utils.Log
@@ -20,13 +21,15 @@ import me.kyuubiran.qqcleanerlite.R
 import me.kyuubiran.qqcleanerlite.util.CleanManager
 import me.kyuubiran.qqcleanerlite.util.ConfigManager
 import me.kyuubiran.qqcleanerlite.util.getFormatCleanTime
+import me.kyuubiran.qqcleanerlite.util.wrapped
 
-class ModuleDialog(activity: Activity) : AlertDialog.Builder(activity) {
+class ModuleDialog(activity: Activity) : AlertDialog.Builder(ContextThemeWrapper(activity, android.R.style.Theme_Material_Dialog_Alert)) {
     companion object {
         val observer by lazy {
             Observe(false)
         }
     }
+
 
     init {
         activity.addModuleAssetPath()
@@ -41,20 +44,23 @@ class ModuleDialog(activity: Activity) : AlertDialog.Builder(activity) {
         setTitle("瘦身模块")
 
         setPositiveButton("关闭", null)
-        setNeutralButton("执行瘦身") { _, _ ->
-            AlertDialog.Builder(activity).run {
-                setTitle("注意")
-                setMessage("确定要执行瘦身吗？")
-                setPositiveButton("确定") { _, _ ->
-                    ConfigManager.lastCleanTime = System.currentTimeMillis()
-                    CleanManager.executeAll()
-                    observer.value = !observer.value
+        setNeutralButton("执行瘦身", null)
+        setCancelable(false)
+        show().apply {
+            getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+                AlertDialog.Builder(activity.wrapped).run {
+                    setTitle("注意")
+                    setMessage("确定要执行瘦身吗？")
+                    setPositiveButton("确定") { _, _ ->
+                        ConfigManager.lastCleanTime = System.currentTimeMillis()
+                        CleanManager.executeAll()
+                        observer.value = !observer.value
+                    }
+                    setNegativeButton("取消", null)
+                    show()
                 }
-                setNegativeButton("取消", null)
-                show()
             }
         }
-        setCancelable(false)
     }
 
     class PrefsFragment : PreferenceFragment(), Preference.OnPreferenceChangeListener,
@@ -67,7 +73,6 @@ class ModuleDialog(activity: Activity) : AlertDialog.Builder(activity) {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.setting_dialog_prefs)
-
 
             (findPreference("enable_auto_clean") as CheckBoxPreference).apply {
                 isChecked = ConfigManager.enableAutoClean
@@ -126,7 +131,7 @@ class ModuleDialog(activity: Activity) : AlertDialog.Builder(activity) {
             inputType: Int? = null,
             onConfirm: (String) -> Unit
         ) {
-            AlertDialog.Builder(activity).run {
+            AlertDialog.Builder(activity.wrapped).run {
                 setTitle(title)
 
                 val et = EditText(activity).apply {

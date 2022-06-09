@@ -47,7 +47,7 @@ object EntryHook : BaseHook() {
             }
             //设置点击事件
             entry.setOnClickListener {
-                ModuleDialog(param.thisObject as Activity).show()
+                ModuleDialog(param.thisObject as Activity)
             }
             //添加入口
             vg.addView(entry, 2)
@@ -113,7 +113,7 @@ object EntryHook : BaseHook() {
                     && parameterTypes[1].isAssignableFrom(preferenceClass)
         }.hookBefore {
             if ("QQCleanerLite" == getKey(it.args[1])) {
-                ModuleDialog(it.thisObject as Activity).show()
+                ModuleDialog(it.thisObject as Activity)
                 it.result = true
             }
         }
