@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 object CleanManager {
-    private val pool = ThreadPoolExecutor(1, 1, 5L, TimeUnit.MINUTES, LinkedBlockingQueue(256))
+    val pool = ThreadPoolExecutor(1, 1, 5L, TimeUnit.MINUTES, LinkedBlockingQueue(256))
 
     fun execute(data: CleanData, showToast: Boolean = true, forceExec: Boolean = false) {
         if (!data.valid) return

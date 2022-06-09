@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="信息">
+        <Preference
+            android:key="title"
+            android:title="标题" />
+        <Preference
+            android:key="author"
+            android:title="作者" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="options"
+        android:title="选项">
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

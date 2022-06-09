@@ -9,7 +9,6 @@ import android.preference.CheckBoxPreference
 import android.preference.Preference
 import android.preference.PreferenceFragment
 import android.text.InputType
-import android.view.ContextThemeWrapper
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.github.kyuubiran.ezxhelper.utils.Log
@@ -23,25 +22,26 @@ import me.kyuubiran.qqcleanerlite.util.ConfigManager
 import me.kyuubiran.qqcleanerlite.util.getFormatCleanTime
 import me.kyuubiran.qqcleanerlite.util.wrapped
 
-class ModuleDialog(activity: Activity) : AlertDialog.Builder(ContextThemeWrapper(activity, android.R.style.Theme_Material_Dialog_Alert)) {
+class ModuleDialog(activity: Activity) :
+    AlertDialog.Builder(activity.wrapped) {
+
     companion object {
         val observer by lazy {
             Observe(false)
         }
     }
 
-
     init {
         activity.addModuleAssetPath()
 
-        val prefsFragment = PrefsFragment()
-        activity.fragmentManager.beginTransaction().add(prefsFragment, "Setting").commit()
+        val fragment = PrefsFragment()
+        activity.fragmentManager.beginTransaction().add(fragment, "Setting").commit()
         activity.fragmentManager.executePendingTransactions()
 
-        prefsFragment.onActivityCreated(null)
+        fragment.onActivityCreated(null)
 
-        setView(prefsFragment.view)
-        setTitle("瘦身模块")
+        setView(fragment.view)
+        setTitle("瘦身模块轻量版")
 
         setPositiveButton("关闭", null)
         setNeutralButton("执行瘦身", null)
@@ -108,6 +108,10 @@ class ModuleDialog(activity: Activity) : AlertDialog.Builder(ContextThemeWrapper
             findPreference("last_clean_time").apply {
                 summary = if (ConfigManager.lastCleanTime > 0) getFormatCleanTime() else "还没有执行过清理哦~"
                 observer.onValueChanged += { runOnMainThread { this.summary = getFormatCleanTime() } }
+            }
+
+            findPreference("manage_prefs").apply {
+                onPreferenceClickListener = this@PrefsFragment
             }
         }
 
@@ -185,6 +189,7 @@ class ModuleDialog(activity: Activity) : AlertDialog.Builder(ContextThemeWrapper
                     ConfigManager.keepFileDays = i
                     Log.toast("保留天数已更新为 $i 天")
                 }
+                "manage_prefs" -> MainConfigDialog(activity)
             }
             return true
         }

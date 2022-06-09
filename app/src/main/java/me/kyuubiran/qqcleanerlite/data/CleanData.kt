@@ -12,6 +12,7 @@ import com.github.kyuubiran.ezxhelper.utils.getJSONArrayOrEmpty
 import com.github.kyuubiran.ezxhelper.utils.getStringOrDefault
 import me.kyuubiran.qqcleanerlite.util.CleanManager
 import me.kyuubiran.qqcleanerlite.util.CleanManager.getConfigDir
+import me.kyuubiran.qqcleanerlite.util.CleanManager.pool
 import me.kyuubiran.qqcleanerlite.util.HOST_APP
 import me.kyuubiran.qqcleanerlite.util.isQqOrTim
 import me.kyuubiran.qqcleanerlite.util.validFor
@@ -181,7 +182,7 @@ class CleanData(private val jsonObject: JSONObject) : Serializable, Cloneable {
     /**
      * 复制到剪切板
      */
-    fun copyToClipboard() {
+    fun exportToClipboard() {
         (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).run {
             setPrimaryClip(ClipData.newPlainText(title, toFormatString()))
         }
@@ -190,7 +191,7 @@ class CleanData(private val jsonObject: JSONObject) : Serializable, Cloneable {
     /**
      * 导出配置文件到下载目录
      */
-    fun export() {
+    fun exportToDownload() {
         val f = File("/storage/emulated/0/Download/${this.title}.json")
         if (!f.exists()) f.createNewFile()
         f.writeText(this.toFormatString())
@@ -199,8 +200,9 @@ class CleanData(private val jsonObject: JSONObject) : Serializable, Cloneable {
     /**
      * 将配置文件推至队列执行
      */
-    fun pushToExecutionQueue(showToast: Boolean = true) {
+    fun pushToExecutionQueue(showToast: Boolean = true, showFinishedToast: Boolean = false) {
         CleanManager.execute(this, showToast, true)
+        if (showToast && showFinishedToast) pool.execute { Log.toast("执行完毕") }
     }
 
     /**
