@@ -17,10 +17,7 @@ import com.github.kyuubiran.ezxhelper.utils.addModuleAssetPath
 import com.github.kyuubiran.ezxhelper.utils.runOnMainThread
 import me.kyuubiran.qqcleanerlite.BuildConfig
 import me.kyuubiran.qqcleanerlite.R
-import me.kyuubiran.qqcleanerlite.util.CleanManager
-import me.kyuubiran.qqcleanerlite.util.ConfigManager
-import me.kyuubiran.qqcleanerlite.util.getFormatCleanTime
-import me.kyuubiran.qqcleanerlite.util.wrapped
+import me.kyuubiran.qqcleanerlite.util.*
 
 class ModuleDialog(activity: Activity) :
     AlertDialog.Builder(activity.wrapped) {
@@ -113,6 +110,14 @@ class ModuleDialog(activity: Activity) :
             findPreference("manage_prefs").apply {
                 onPreferenceClickListener = this@PrefsFragment
             }
+
+            findPreference("join_tg_channel").apply {
+                onPreferenceClickListener = this@PrefsFragment
+            }
+
+            findPreference("view_project").apply {
+                onPreferenceClickListener = this@PrefsFragment
+            }
         }
 
         override fun onPreferenceChange(p0: Preference?, p1: Any?): Boolean {
@@ -190,6 +195,8 @@ class ModuleDialog(activity: Activity) :
                     Log.toast("保留天数已更新为 $i 天")
                 }
                 "manage_prefs" -> MainConfigDialog(activity)
+                "join_tg_channel" -> activity.openUrl("https://t.me/QQCleaner")
+                "view_project" -> activity.openUrl("https://github.com/KyuubiRan/QQCleanerLite")
             }
             return true
         }

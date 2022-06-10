@@ -88,7 +88,7 @@ object CleanManager {
     private object AutoClean : Runnable {
         override fun run() {
             if (!ConfigManager.enableAutoClean) return
-            if (System.currentTimeMillis() - ConfigManager.lastCleanTime > (ConfigManager.autoCleanDelay * 60L * 60L * 1000L)) return
+            if (System.currentTimeMillis() - ConfigManager.lastCleanTime <= (ConfigManager.autoCleanDelay * 60L * 60L * 1000L)) return
             executeAll()
             mainHandler.postDelayed(this, 30000L)
         }

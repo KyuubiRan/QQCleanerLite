@@ -1,7 +1,8 @@
 package me.kyuubiran.qqcleanerlite.util
 
-import android.R
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.ContextThemeWrapper
 import java.text.SimpleDateFormat
 
@@ -29,4 +30,8 @@ fun HostAppType.validFor(s: String) = when {
 fun getFormatCleanTime(): String = ConfigManager.lastCleanTime.let { if (it > 0) SimpleDateFormat.getInstance().format(it) else "还没有清理过哦~" }
 
 val Context.wrapped: Context
-    get() = ContextThemeWrapper(this, R.style.Theme_Material_Dialog_Alert)
+    get() = ContextThemeWrapper(this, android.R.style.Theme_Material_Dialog_Alert)
+
+fun Context.openUrl(uriString: String) {
+    this.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uriString)))
+}
