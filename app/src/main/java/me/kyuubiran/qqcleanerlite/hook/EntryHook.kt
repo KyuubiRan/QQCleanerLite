@@ -1,6 +1,7 @@
 package me.kyuubiran.qqcleanerlite.hook
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -10,12 +11,28 @@ import android.widget.ListView
 import com.github.kyuubiran.ezxhelper.utils.*
 import com.github.kyuubiran.ezxhelper.utils.Log.logeIfThrow
 import me.kyuubiran.qqcleanerlite.dialog.ModuleDialog
-import me.kyuubiran.qqcleanerlite.util.HOST_APP
-import me.kyuubiran.qqcleanerlite.util.isQqOrTim
-import me.kyuubiran.qqcleanerlite.util.isWeChat
+import me.kyuubiran.qqcleanerlite.util.*
 import java.lang.reflect.Method
 
 object EntryHook : BaseHook() {
+    private fun showSettingDialog(act: Activity) {
+        if (ConfigManager.isFirstRun) {
+            AlertDialog.Builder(act.wrapped).run {
+                setTitle("注意事项")
+                setMessage("本插件采用删除文件的方式，以达成减少3A大作App的体积的目的，同时默认的配置文件会清理图片！！！如果你不需要的话记得关掉！本插件开发旨在学习，请勿用于非法用途，否则后果自负。")
+                setCancelable(false)
+                setPositiveButton("取消", null)
+                setNeutralButton("我已知晓") { _, _ ->
+                    ConfigManager.isFirstRun = false
+                    ModuleDialog(act)
+                }
+                show()
+            }
+        } else {
+            ModuleDialog(act)
+        }
+    }
+
     private fun initForQqOrTim() {
         getMethodByDesc("Lcom/tencent/mobileqq/activity/AboutActivity;->doOnCreate(Landroid/os/Bundle;)Z").hookAfter { param ->
             val cFormSimpleItem = loadClassAny(
@@ -47,7 +64,7 @@ object EntryHook : BaseHook() {
             }
             //设置点击事件
             entry.setOnClickListener {
-                ModuleDialog(param.thisObject as Activity)
+                showSettingDialog(param.thisObject as Activity)
             }
             //添加入口
             vg.addView(entry, 2)
@@ -113,7 +130,7 @@ object EntryHook : BaseHook() {
                     && parameterTypes[1].isAssignableFrom(preferenceClass)
         }.hookBefore {
             if ("QQCleanerLite" == getKey(it.args[1])) {
-                ModuleDialog(it.thisObject as Activity)
+                showSettingDialog(it.thisObject as Activity)
                 it.result = true
             }
         }

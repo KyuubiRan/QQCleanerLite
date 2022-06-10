@@ -72,7 +72,7 @@ object CleanManager {
         onFinish(getAllConfigs())
     }
 
-    fun getAllConfigs(): List<CleanData> {
+    private fun getAllConfigs(): List<CleanData> {
         val arr = ArrayList<CleanData>()
         runCatching {
             getConfigDir().also { Log.i("Config path:${it.path}") }.listFiles()
