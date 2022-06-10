@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 object CleanManager {
-    val pool = ThreadPoolExecutor(1, 1, 5L, TimeUnit.MINUTES, LinkedBlockingQueue(256))
+    val pool = ThreadPoolExecutor(1, 1, 10L, TimeUnit.MINUTES, LinkedBlockingQueue(256))
 
     fun execute(data: CleanData, showToast: Boolean = true, forceExec: Boolean = false) {
         if (!data.valid) return
@@ -64,7 +64,7 @@ object CleanManager {
         val path = "${CommonPath.publicData.second}/qqcleaner"
         val f = File(path)
         if (f.exists()) return f
-        f.mkdir()
+        f.mkdirs()
         return f
     }
 
@@ -75,8 +75,11 @@ object CleanManager {
     fun getAllConfigs(): List<CleanData> {
         val arr = ArrayList<CleanData>()
         runCatching {
-            getConfigDir().listFiles()?.forEach { f -> runCatching { arr.add(CleanData(f)) }.logeIfThrow() }
-        }.logeIfThrow()
+            getConfigDir().also { Log.i("Config path:${it.path}") }.listFiles()
+                ?.forEach { f -> runCatching { arr.add(CleanData(f)) }.logeIfThrow("Failed to load config") }
+        }.logeIfThrow {
+            Log.toast("获取瘦身配置时发生了一个错误")
+        }
         return arr
     }
 
@@ -85,7 +88,7 @@ object CleanManager {
     private object AutoClean : Runnable {
         override fun run() {
             if (!ConfigManager.enableAutoClean) return
-            if ((ConfigManager.lastCleanTime + ConfigManager.autoCleanDelay * 3600L) - System.currentTimeMillis() <= 0) return
+            if (System.currentTimeMillis() - ConfigManager.lastCleanTime > (ConfigManager.autoCleanDelay * 60L * 60L * 1000L)) return
             executeAll()
             mainHandler.postDelayed(this, 30000L)
         }

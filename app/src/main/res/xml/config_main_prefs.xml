@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="导入配置">
+<!--        <Preference-->
+<!--            android:key="from_file"-->
+<!--            android:title="从文件导入" />-->
+        <Preference
+            android:key="from_clipboard"
+            android:title="从剪切板导入" />
+    </PreferenceCategory>
+
     <PreferenceCategory
         android:key="config_list"
         android:title="配置列表">
-
     </PreferenceCategory>
 
 </PreferenceScreen>

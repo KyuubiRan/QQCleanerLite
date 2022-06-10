@@ -243,7 +243,7 @@ class CleanData(private val jsonObject: JSONObject) : Serializable, Cloneable {
                 primaryClip?.let { clipData ->
                     if (clipData.itemCount > 0) {
                         clipData.getItemAt(0).text.run {
-                            return fromJson(this.toString()).also {
+                            return runCatching { fromJson(this.toString()) }.getOrNull()?.also {
                                 if (alsoSave) it.save()
                             }
                         }

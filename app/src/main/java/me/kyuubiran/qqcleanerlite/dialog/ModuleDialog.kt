@@ -67,7 +67,7 @@ class ModuleDialog(activity: Activity) :
         Preference.OnPreferenceClickListener {
 
         private val onAutoCleanChanged by lazy {
-            Observe(false)
+            Observe(ConfigManager.enableAutoClean)
         }
 
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +92,7 @@ class ModuleDialog(activity: Activity) :
             }
 
             (findPreference("dont_show_clean_toast") as CheckBoxPreference).apply {
-                isChecked = ConfigManager.enableAutoClean
+                isChecked = ConfigManager.dontShowCleanToast
                 onPreferenceChangeListener = this@PrefsFragment
             }
 
@@ -121,7 +121,7 @@ class ModuleDialog(activity: Activity) :
                     val b = p1 as Boolean
                     if (b == ConfigManager.enableAutoClean) return true
                     ConfigManager.enableAutoClean = b
-                    onAutoCleanChanged.value = !onAutoCleanChanged.value
+                    onAutoCleanChanged.value = b
                 }
                 "dont_show_clean_toast" -> ConfigManager.dontShowCleanToast = p1 as Boolean
             }

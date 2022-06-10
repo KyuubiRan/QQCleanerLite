@@ -12,9 +12,10 @@ import android.preference.PreferenceFragment
 import com.github.kyuubiran.ezxhelper.utils.Log
 import me.kyuubiran.qqcleanerlite.R
 import me.kyuubiran.qqcleanerlite.data.CleanData
+import me.kyuubiran.qqcleanerlite.util.Shared
 import me.kyuubiran.qqcleanerlite.util.wrapped
 
-class ModifyConfigDialog(activity: Activity, private val cleanData: CleanData) :
+class ModifyConfigDialog(activity: Activity) :
     AlertDialog.Builder(activity.wrapped) {
 
     init {
@@ -24,10 +25,6 @@ class ModifyConfigDialog(activity: Activity, private val cleanData: CleanData) :
         activity.fragmentManager.beginTransaction().add(fragment, "Modify").commit()
         activity.fragmentManager.executePendingTransactions()
 
-        val bundle = Bundle()
-        bundle.putSerializable("cleanData", cleanData)
-        fragment.arguments = bundle
-
         fragment.onActivityCreated(null)
         setView(fragment.view)
 
@@ -35,9 +32,11 @@ class ModifyConfigDialog(activity: Activity, private val cleanData: CleanData) :
         setNeutralButton("放弃更改", null)
 
         setPositiveButton("保存") { _, _ ->
-            cleanData.save()
+            Shared.currentModify.save()
             Log.toast("保存成功！")
         }
+
+        show()
     }
 
     class PathPreference(
@@ -46,6 +45,7 @@ class ModifyConfigDialog(activity: Activity, private val cleanData: CleanData) :
     ) : CheckBoxPreference(ctx) {
         init {
             isChecked = path.enable
+            title = path.title
         }
 
         override fun onClick() {
@@ -55,31 +55,26 @@ class ModifyConfigDialog(activity: Activity, private val cleanData: CleanData) :
     }
 
     class ModifyConfigFragment : PreferenceFragment() {
-        private lateinit var cleanData: CleanData
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.config_modify_prefs)
 
-            arguments.getSerializable("cleanData")?.let {
-                cleanData = it as CleanData
-            } ?: run { Log.toast("无法读取配置文件，请检查配置文件是否正确！");return }
-
             findPreference("title").apply {
-                summary = cleanData.title
+                summary = Shared.currentModify.title
             }
 
             findPreference("author").apply {
-                summary = cleanData.author
+                summary = Shared.currentModify.author
             }
 
             (findPreference("options") as PreferenceCategory).apply {
-                if (!cleanData.valid) {
+                if (!Shared.currentModify.valid) {
                     Log.toast("无效的配置文件！")
                     return
                 }
 
-                cleanData.content.forEach {
+                Shared.currentModify.content.forEach {
                     val preference = PathPreference(activity, it)
                     addPreference(preference)
                 }
